@@ -1,0 +1,26 @@
+
+services:
+  plateau:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # For Apple Silicon (M1/M2/M3): use native ARM64 for best performance
+    platform: linux/amd64
+    image: plateau-py:latest
+    container_name: plateau-dev
+
+    # Bind-mount the repo so all work inside the container is reflected locally
+    volumes:
+      - ./:/workspace
+
+    # Same working dir as in Dockerfile
+    working_dir: /workspace
+
+    environment:
+      # Keep caches inside the mounted workspace so they persist
+      - XDG_CACHE_HOME=/workspace/cache
+      - PYTHONPATH=/workspace
+
+    # Interactive defaults; you can override command in `docker compose run ...`
+    tty: true
+    stdin_open: true
